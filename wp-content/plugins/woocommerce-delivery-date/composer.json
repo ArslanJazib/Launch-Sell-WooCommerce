@@ -1,0 +1,17 @@
+{
+    "name": "arslan-jazib/woocommerce-delivery-date",
+    "description": "A custom plugin to add a delivery date feature to WooCommerce Subscriptions.",
+    "type": "wordpress-plugin",
+    "autoload": {
+        "psr-4": {
+            "WCDeliveryDate\\": ""
+        }
+    },
+    "authors": [
+        {
+            "name": "Arslan Jazib",
+            "email": "arslanjazib_98@yahoo.com"
+        }
+    ],
+    "require": {}
+}
