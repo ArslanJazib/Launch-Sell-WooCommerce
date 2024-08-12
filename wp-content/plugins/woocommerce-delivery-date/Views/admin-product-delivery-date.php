@@ -1,6 +1,6 @@
 <?php if (!defined('ABSPATH')) exit; ?>
 
-<div class="options_group">
+<div class="options_group delivery_date_options">
     <!-- Delivery Start Date Field -->
     <p class="form-field">
         <label for="_delivery_date"><?php _e('Delivery Start Date', 'woocommerce'); ?></label>

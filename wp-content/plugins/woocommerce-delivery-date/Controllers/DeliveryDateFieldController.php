@@ -12,6 +12,17 @@ class DeliveryDateFieldController {
         add_action('woocommerce_before_add_to_cart_button', array($this, 'display_recurring_dates'), 10);
         add_filter('woocommerce_add_cart_item_data', array($this, 'add_delivery_date_to_cart_item'), 10, 2);
         add_action('woocommerce_checkout_create_order_line_item', array($this, 'add_delivery_date_to_order_items'), 10, 4);
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
+    }
+
+    public function enqueue_admin_scripts() {
+        wp_enqueue_script(
+            'delivery-date-admin',
+            plugin_dir_url(__FILE__) . '../js/delivery-date-admin.js',
+            array('jquery'),
+            null,
+            true
+        );
     }
 
     public function add_delivery_date_fields() {
