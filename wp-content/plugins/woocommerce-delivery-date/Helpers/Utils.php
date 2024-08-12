@@ -21,6 +21,31 @@ class Utils {
 
         return $product->is_type('subscription') || $product->is_type('variable-subscription');
     }
+
+    public static function get_recurring_dates($postID = null, $deliveryDate = null){
+        $dates = [];
+
+        if(!$postID){
+            global $post;
+            $postID = $post->ID;
+        }
+
+        if (Utils::is_subscription_product($postID)) {
+            if(!$deliveryDate){
+                $delivery_date = DeliveryDateModel::get_delivery_date($postID);
+            } else {
+                $delivery_date = $deliveryDate;
+            }
+            $interval_value = DeliveryDateModel::get_interval_value($postID);
+            $interval_type = DeliveryDateModel::get_interval_type($postID);
+            
+            if ($delivery_date && $interval_value && $interval_type) {
+                $dates = DeliveryDateCalculatorController::calculate_dates($delivery_date, $interval_value, $interval_type);
+            }
+        }
+
+        return $dates;
+    }
 }
 
 ?>

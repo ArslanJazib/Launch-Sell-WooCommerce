@@ -10,11 +10,14 @@ class CartController {
     public function __construct() {
         add_filter('woocommerce_get_item_data', array($this, 'display_delivery_date_in_cart'), 10, 2);
         add_action('woocommerce_checkout_create_order_line_item', array($this, 'add_delivery_date_to_order_items'), 10, 4);  
+        add_action('woocommerce_after_cart_item_name', array($this, 'display_delivery_date_dropdown'), 10, 2);
         add_action('wp_enqueue_scripts', array($this, 'enqueue_custom_cart_script'), 10, 2);  
-        add_action('wp_ajax_get_delivery_date_dropdown', array($this, 'display_delivery_date_dropdown'));
-        add_action('wp_ajax_nopriv_get_delivery_date_dropdown', array($this, 'display_delivery_date_dropdown'));
         add_action('wp_ajax_update_delivery_date', array($this, 'update_cart_item_delivery_date'));
         add_action('wp_ajax_nopriv_update_delivery_date', array($this, 'update_cart_item_delivery_date'));
+        
+        // Alternative JS Based Approach For Woocommere Blocks Approach
+        // add_action('wp_ajax_get_delivery_date_dropdown', array($this, 'display_delivery_date_dropdown'));
+        // add_action('wp_ajax_nopriv_get_delivery_date_dropdown', array($this, 'display_delivery_date_dropdown'));
     }
 
     public function display_delivery_date_in_cart($item_data, $cart_item) {
@@ -40,9 +43,7 @@ class CartController {
     
             if (Utils::is_subscription_product($product_id)) {
                 $delivery_date = isset($cart_item['_delivery_date']) ? $cart_item['_delivery_date'] : '';
-                $interval_value = DeliveryDateModel::get_interval_value($product_id);
-                $interval_type = DeliveryDateModel::get_interval_type($product_id);
-                $dates = DeliveryDateCalculatorController::calculate_dates($delivery_date, $interval_value, $interval_type);    
+                $dates = Utils::get_recurring_dates($product_id, $delivery_date);
                 $cart_item_data[$cart_item_key] = [
                     'product_id' => $product_id,
                     'product_name' => $product_name,
@@ -52,9 +53,18 @@ class CartController {
             }
         }
         
-        include(plugin_dir_path(__FILE__) . '../Views/cart-page-delivery-date.php');    
+        // Include the view file to render the HTML
+        include(plugin_dir_path(__FILE__) . '../Views/cart-page-delivery-date.php');
+        // Get the HTML output
         $html = ob_get_clean();
-        wp_send_json_success(array('html' => $html));
+        
+        // If it's an Ajax request, send JSON response For JS Based Alternative
+        if (defined('DOING_AJAX') && DOING_AJAX) {
+            wp_send_json_success(array('html' => $html));
+        } else {
+            // Otherwise, just output the HTML
+            echo $html;
+        }
     }
 
     public function enqueue_custom_cart_script() {

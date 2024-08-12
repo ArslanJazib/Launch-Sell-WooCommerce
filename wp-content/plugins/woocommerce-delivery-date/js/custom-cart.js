@@ -1,25 +1,4 @@
 jQuery(document).ready(function($) {
-    // Function to load and append the delivery date dropdown
-    function loadDeliveryDateDropdown() {
-        $.ajax({
-            url: wc_add_to_cart_params.ajax_url,
-            type: 'POST',
-            data: {
-                action: 'get_delivery_date_dropdown'
-            },
-            success: function(response) {
-                if (response.success) {
-                    $('.wp-block-woocommerce-cart-items-block').append(response.data.html);
-                } else {
-                    console.error('Failed to load delivery date dropdown.');
-                }
-            },
-            error: function() {
-                console.error('AJAX request failed.');
-            }
-        });
-    }
-
     // Event handler for changing delivery date
     $(document).on('change', '.delivery_date_dropdown', function() {
         $.ajax({
@@ -44,5 +23,26 @@ jQuery(document).ready(function($) {
         });
     });
 
-    loadDeliveryDateDropdown();
+    // Alternative JS Based Approach For Woocommere Blocks Approach
+    // Function to load and append the delivery date dropdown
+    // function loadDeliveryDateDropdown() {
+    //     $.ajax({
+    //         url: wc_add_to_cart_params.ajax_url,
+    //         type: 'POST',
+    //         data: {
+    //             action: 'get_delivery_date_dropdown'
+    //         },
+    //         success: function(response) {
+    //             if (response.success) {
+    //                 $('.wp-block-woocommerce-cart-items-block').append(response.data.html);
+    //             } else {
+    //                 console.error('Failed to load delivery date dropdown.');
+    //             }
+    //         },
+    //         error: function() {
+    //             console.error('AJAX request failed.');
+    //         }
+    //     });
+    // }
+    // loadDeliveryDateDropdown();
 });
